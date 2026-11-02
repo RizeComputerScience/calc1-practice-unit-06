@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Unit 6 Practice: The Chain Rule and What It Unlocks</title>
+<title>Unit 6 Practice: The Chain Rule and Implicit Differentiation</title>
 <meta name="description" content="Practice the chain rule and the derivatives it unlocks, with feedback on each line of your work.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3224,7 +3224,7 @@ function backHTML() {
 }
 function page() {
   return header('Unit 6 Practice', SECTIONS_P.map(function (s) { return ['#' + s.id, s.nav || s.title]; }).concat([['#sec-back', 'Back to Paul']])) +
-    '<main id="top">' + hero({ kicker: 'Calculus I · Unit 6', title: 'Unit 6 Practice: The Chain Rule and What It Unlocks',
+    '<main id="top">' + hero({ kicker: 'Calculus I · Unit 6', title: 'Unit 6 Practice: The Chain Rule and Implicit Differentiation',
       dek: 'Use this page after the Unit 6 reading and Paul’s practice problems. For each problem, choose the method, then type each line of the work. Each line is checked before the next one opens. Type a power with ⟦^⟧, as in ⟦x^2⟧ or ⟦e^(-3t)⟧, and put a whole top or bottom in parentheses, as in ⟦(x + 1)/(x − 2)⟧.' }) +
     SECTIONS_P.map(sectionHTML).join('') + backHTML() + '</main>';
 }

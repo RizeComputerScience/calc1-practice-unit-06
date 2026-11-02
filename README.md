@@ -1,4 +1,4 @@
-# Calculus I: Unit 6 Practice: The Chain Rule and What It Unlocks (interactive lesson)
+# Calculus I: Unit 6 Practice: The Chain Rule and Implicit Differentiation (interactive lesson)
 
 A standalone interactive lesson page for Rize's Calculus I course (catalog code `MATHS I`). No login and no backend; progress is saved in the browser's own `localStorage`.
 
