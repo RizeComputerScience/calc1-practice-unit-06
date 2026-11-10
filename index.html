@@ -885,6 +885,8 @@ p.tb-lab{display:block}
 .prob .lhs{white-space:normal}
 @media (max-width:640px){.prob .lhs{font-size:21px}.prob .plead{font-size:19px}}
 .prob .pfig{margin-top:22px}
+/* a table given with a problem (More Practice, Problem 10) sits above the board */
+.prob .ptbl{margin:10px 0 4px}
 
 </style>
 </head>
@@ -2767,6 +2769,10 @@ var selfcheck = (function () {
    around a top or bottom (PAREN_MSG, from the pilot's v2) and without the parentheses around an exponent (EXP_MSG, added
    in this page's novice read), and the hero keeps the typing sentence.
 
+   More Practice (2026-11-10, clarity rebuild): section 6, Problems 9 to 17 (ids m1 to m9), optional. For it the builder took
+   the Unit 4 page's `tbl` (a table given with a problem, shown above the board) and `again` (a step that shows the table
+   again), `board` became optional, and one guard was added, FORM.onePower (Problem 9's "write it as a power" row).
+
    ================================ THE PROBLEM OBJECT ================================
    {
      id:    'p2',                       // unique, short. The card is #ex-p2, its block is #blk-p2, its closing figure
@@ -2803,6 +2809,8 @@ var T_LOGD = paulEx('LogDiff', 'Logarithmic Differentiation', 'Example 1');
 var T_LOGD2 = paulEx('LogDiff', 'Logarithmic Differentiation', 'Examples 2 and 3');
 var T_LIN = paulEx('LinearApproximations', 'Linear Approximations', 'Example 1');
 var T_DIFF = paulEx('Differentials', 'Differentials', 'Example 2');
+var T_CHAINR = paulEx('ChainRule', 'Chain Rule');                                       /* More Practice: the boxed formula and its dy/du · du/dx form */
+var T_EXPLOG = paulEx('DiffExpLogFcns', 'Derivatives of Exponential and Logarithm Functions');   /* More Practice: "log"_a x */
 
 /* ---------------- form guards (see the problem object above) ---------------- */
 var FORM = {
@@ -2832,11 +2840,15 @@ var FORM = {
       if (/\/|sqrt|√|\)\^|\)\(|[0-9a-z.]\(/.test(arg)) return 'That is equal, but a logarithm still holds a product, a quotient, a root or a power of a group. Use the laws of logarithms to write it as a sum of simpler logarithms, with every exponent brought down in front.';
     }
     return null;
-  }
+  },
+  /* one power, no fraction bar: for the row that rewrites 1/(4x − 3)^2 as a power (More Practice) */
+  onePower: function (raw) { return /[\/÷]/.test(raw) ? 'That is equal, but it is still a fraction. Write it with no fraction bar, as one power of `4x − 3` with a negative exponent.' : null; }
 };
 
 /* the curve x^2 y + y^3 = 10 as y(x): y^3 + x^2 y is increasing in y, so each x has one y (Newton's method) */
 function curveY(x) { var y = 2; for (var i = 0; i < 40; i++) y -= (y * y * y + x * x * y - 10) / (3 * y * y + x * x); return y; }
+/* More Practice, Problem 14: the curve x^2 y^2 + y = 6 as y(x), the positive root of x^2 y^2 + y − 6 = 0 (y = 6 at x = 0) */
+function m6Y(x) { return Math.abs(x) < 1e-6 ? 6 : (-1 + Math.sqrt(1 + 24 * x * x)) / (2 * x * x); }
 
 /* ---------------- the sections ---------------- */
 var SECTIONS_P = [
@@ -2844,7 +2856,8 @@ var SECTIONS_P = [
   { id: 'sec-explog', title: 'Exponential, Log and Inverse Trig Functions', nav: 'Exp, Log, Inverse Trig', lede: 'These go with Paul’s [Chain Rule](' + T_GFORMS[0] + '), Examples 3 and 4, and [Derivatives of Inverse Trig Functions](' + T_INV[0] + '), Example 4.' },
   { id: 'sec-implicit', title: 'Implicit Differentiation', nav: 'Implicit', lede: 'This goes with Paul’s [Implicit Differentiation](' + T_IMP[0] + '), Examples 2 to 5.' },
   { id: 'sec-logdiff', title: 'Logarithmic Differentiation', nav: 'Log Differentiation', lede: 'These go with Paul’s [Logarithmic Differentiation](' + T_LOGD[0] + '), Examples 1 to 3.' },
-  { id: 'sec-linear', title: 'Linear Approximation', nav: 'Linear Approximation', lede: 'This goes with Paul’s [Linear Approximations](' + T_LIN[0] + '), Example 1, and [Differentials](' + T_DIFF[0] + '), Example 2.' }
+  { id: 'sec-linear', title: 'Linear Approximation', nav: 'Linear Approximation', lede: 'This goes with Paul’s [Linear Approximations](' + T_LIN[0] + '), Example 1, and [Differentials](' + T_DIFF[0] + '), Example 2.' },
+  { id: 'sec-more', title: 'More Practice (Only If You Want It)', nav: 'More', lede: 'Nothing in this section is required. If a kind of problem above took you more than one try, the problem of the same kind here gives you another go: Problems 9 to 11 for the chain rule, Problems 12 and 13 for exponential, log and inverse trig functions, Problem 14 for implicit differentiation, Problem 15 for logarithmic differentiation, and Problems 16 and 17 for linear approximation and differentials. The Unit 6 Problem Set and the Derivative Rules Check come next either way.' }
 ];
 
 /* ---------------- the problems ---------------- */
@@ -3062,7 +3075,273 @@ var PROBLEMS = [
     graph: { x: [0, 10], y: [40, 95], ticks: { x: 2, y: 10 }, fns: [{ f: function (t) { return 20 + 70 * Math.exp(-0.1 * t); } }, { f: function (t) { return 90 - 7 * t; }, role: 'rate', dash: true, domain: [0, 7] }],
       dots: [{ x: 0, y: 90, label: '(0, 90)', at: 'ne' }],
       aria: 'The graph of T(t) = 20 + 70 e to the −0.1t falling from 90 at t = 0 to about 46 at t = 10, with the dashed tangent line L(t) = 90 − 7t starting at (0, 90) and falling below the curve.' },
-    after: 'Near `t = 0` the tangent line `L(t) = 90 − 7t` stays close to the curve. Farther out the curve flattens and `L` falls below it.' }
+    after: 'Near `t = 0` the tangent line `L(t) = 90 − 7t` stays close to the curve. Farther out the curve flattens and `L` falls below it.' },
+
+  /* ================= More Practice (optional), added 2026-11-10 by the clarity rebuild =================
+     From the practice twins removed from Unit 6 Worked Examples (plan/clarity-rebuild/twins/unit-06.md: 6.1 to 6.8) and
+     one value-add Paul problem (plan/clarity-rebuild/units/unit-06/value-add.md: Differentials 4). Ids m1 to m9, shown as
+     Problems 9 to 17. Every key and wrong answer: SPEC.md, "More Practice", and tests/check_math.py. */
+
+  /* 9. (twin 6.1) the chain rule on a negative power */
+  { id: 'm1', sec: 'sec-more', task: 'Differentiate `g`, and find `g′(1)`. Write `g(x)` as a power first.', board: 'g(x) = F{1}{(4x − 3)^2}', teach: T_CHAIN,
+    steps: [
+      { lead: 'Write `g(x)` as a power of `4x − 3`.', ask: 'g(x) =', ans: '(4x - 3)^(-2)', form: FORM.onePower,
+        wrongs: [['(4x - 3)^2', 'Moving a power from the bottom to the top changes the sign of its exponent: `F{1}{u^2} = u^(−2)`.'],
+          ['-(4x - 3)^2', 'The minus sign goes in the exponent, not in front: `F{1}{u^2} = u^(−2)`.']],
+        hints: ['`F{1}{u^n} = u^(−n)`, with `u = 4x − 3` and `n = 2`.'] },
+      { lead: 'To evaluate `(4x − 3)^(−2)`, which operation would you do last? That is the outside function.', ok: 0, pick: [
+        ['The power `−2`', 'You would work out `4x − 3` first and raise it to the power `−2` last, so the power is outside and `4x − 3` is inside.'],
+        ['Subtracting 3', 'Subtracting 3 happens inside the parentheses, before the power. The last step is the power `−2`.'],
+        ['Multiplying `x` by 4', 'Multiplying by 4 happens first, inside `4x − 3`. The last step is the power `−2`.']] },
+      { lead: 'Differentiate the outside function with the inside left alone, then multiply by the derivative of the inside.', ask: 'g′(x) =', ans: '-8(4x - 3)^(-3)',
+        wrongs: [['-2(4x - 3)^(-3)', 'Multiply by the derivative of the inside: `4x − 3` has derivative 4, and `−2 · 4 = −8`.'],
+          ['-8(4x - 3)^(-1)', 'Lowering the exponent by one gives `−2 − 1 = −3`. Going to `−1` raised it.'],
+          ['8(4x - 3)^(-3)', 'The exponent `−2` comes down as a factor, so the derivative is negative: `−2 · 4 = −8`.']],
+        hints: ['The derivative of `u^(−2)` is `−2u^(−3)`. Put `4x − 3` in for `u`, then multiply by the derivative of `4x − 3`.'],
+        why: 'Written as a fraction, this is `g′(x) = F{−8}{(4x − 3)^3}`.' },
+      { lead: 'Evaluate `g′(1)`.', ask: 'g′(1) =', num: true, ans: '-8',
+        wrongs: [['8', 'At `x = 1`, `4x − 3 = 1` and `1^(−3) = 1`, so `g′(1) = −8 · 1`. Keep the minus sign.'],
+          ['-2', 'Include the 4 from the derivative of the inside: `−2 · 4 · 1^(−3) = −8`.']],
+        hints: ['At `x = 1`, the inside is `4 − 3 = 1`.'] }] },
+
+  /* 10. (twin 6.2) the chain rule from a table */
+  { id: 'm2', sec: 'sec-more', task: 'Use the table. Let `h(x) = g(f(x))`, and find `h′(2)`.', teach: T_CHAINR,
+    tbl: { cols: ['`x`', '`f(x)`', '`f′(x)`', '`g(x)`', '`g′(x)`'], rows: [['2', '5', '3', '1', '−4'], ['5', '−1', '2', '6', '4']] },
+    steps: [
+      { lead: 'In `h(x) = g(f(x))`, which function is inside?', ok: 0, pick: [
+        ['`f`: you find `f(x)` first, then put it into `g`', 'The inside function is the one you evaluate first.'],
+        ['`g`, because it is written first', '`g` is written first but used last: it acts on `f(x)`. The function you evaluate first, `f`, is inside.'],
+        ['Neither: `h` multiplies `f` by `g`', '`g(f(x))` means `g` applied to `f(x)`, not `g(x)` times `f(x)`.']] },
+      { lead: 'Which is the chain rule for `h′(2)`?', ok: 0, pick: [
+        ['`h′(2) = g′(f(2)) · f′(2)`', 'The outside derivative is taken at the inside value, `f(2)`, and multiplied by the inside derivative at 2.'],
+        ['`h′(2) = g′(2) · f′(2)`', 'The outside derivative is taken at the inside value, `f(2)`, not at 2.'],
+        ['`h′(2) = g′(f(2)) · f(2)`', 'Multiply by the derivative of the inside, `f′(2)`, not by its value, `f(2)`.'],
+        ['`h′(2) = f′(g(2)) · g′(2)`', 'That is the derivative of `f(g(x))`, with `g` inside. In `h`, `f` is inside.']] },
+      { lead: 'Find the inside value, from the row for `x = 2`.', ask: 'f(2) =', num: true, ans: '5',
+        wrongs: [['3', '3 is `f′(2)`, the slope. The value `f(2)` is in the `f(x)` column.'],
+          ['1', '1 is `g(2)`. The inside value is `f(2)`, in the `f(x)` column.']],
+        hints: ['In the row for `x = 2`, read the `f(x)` column.'] },
+      { again: true, lead: 'The outside derivative is taken at that value. Read `g′(5)` from the row for `x = 5`.', ask: 'g′(5) =', num: true, ans: '4',
+        wrongs: [['-4', '−4 is `g′(2)`, from the row for `x = 2`. Take the outside derivative at the inside value, 5.'],
+          ['6', '6 is `g(5)`, a value. Use the `g′(x)` column.'],
+          ['2', '2 is `f′(5)`. Use the `g′(x)` column.']],
+        hints: ['In the row for `x = 5`, read the `g′(x)` column.'] },
+      { lead: 'Multiply by the inside derivative, `f′(2)`.', ask: 'h′(2) = g′(5) · f′(2) =', num: true, ans: '12',
+        wrongs: [['-12', 'That is `g′(2) · f′(2) = −4 · 3`, with the outside derivative read at 2. Use `g′(5) = 4`.'],
+          ['8', 'That is `g′(5) · f′(5) = 4 · 2`. The inside derivative is read at 2: `f′(2) = 3`.'],
+          ['20', 'That is `g′(5) · f(2) = 4 · 5`. Multiply by the derivative `f′(2) = 3`, not the value `f(2)`.']],
+        hints: ['`f′(2)` is in the row for `x = 2`. Multiply it by `g′(5) = 4`.'] }] },
+
+  /* 11. (twin 6.3) the chain rule with units: rates multiply */
+  { id: 'm3', sec: 'sec-more', task: 'The fuel `F` in a car’s tank, in liters, depends on the distance `d` driven, in kilometers, and `d` depends on the time `t` in hours. The car is traveling at 90 km per hour and burns 0.07 liters per kilometer. Is `D{F}{t}` positive or negative? Find it, with units.', teach: T_CHAINR,
+    steps: [
+      { lead: 'Time changes the distance, and the distance changes the fuel. Which product gives `D{F}{t}`?', ok: 0, pick: [
+        ['`D{F}{d} · D{d}{t}`', 'Rates in a chain multiply, and the kilometers cancel: liters per kilometer times kilometers per hour is liters per hour.'],
+        ['`D{F}{d} ÷ D{d}{t}`', 'Rates in a chain multiply. Dividing liters per kilometer by kilometers per hour does not leave liters per hour.'],
+        ['`D{F}{d} + D{d}{t}`', 'Rates in a chain multiply. Liters per kilometer and kilometers per hour have different units, so they cannot be added.']] },
+      { lead: 'Write `D{F}{d}`, the change in fuel per kilometer, with its sign.', ask: 'D{F}{d} =', num: true, ans: '-0.07', tol: 0.0005, units: 'liters per km', unitAlts: ['L/km', 'liters/km', 'liters per kilometer'],
+        wrongs: [['0.07', 'Burning fuel lowers the amount in the tank, so `F` falls as `d` grows. The rate is negative.'],
+          ['90', '90 is `D{d}{t}`, the speed. `D{F}{d}` is the fuel per kilometer.']],
+        hints: ['The car burns 0.07 liters each kilometer. Does the fuel in the tank go up or down?'] },
+      { lead: 'Write `D{d}{t}`, the change in distance per hour.', ask: 'D{d}{t} =', num: true, ans: '90', units: 'km per hour', unitAlts: ['km/h', 'km/hr', 'kilometers per hour'],
+        wrongs: [['-90', 'The distance driven grows as time passes, so this rate is positive.'],
+          [['0.07', '-0.07'], 'That is `D{F}{d}`, the fuel per kilometer. `D{d}{t}` is the speed.']],
+        hints: ['How many kilometers does the car travel each hour?'] },
+      { lead: 'Is `D{F}{t}` positive or negative?', ok: 0, pick: [
+        ['Negative: a negative rate times a positive rate is negative', 'The tank empties as time passes.'],
+        ['Positive, because the car moves forward', 'The distance grows, but the fuel falls. The product of `−0.07` and 90 is negative.'],
+        ['Zero, because the car travels at a steady speed', 'A steady speed makes `D{d}{t}` constant, not 0, and the car keeps burning fuel.']] },
+      { lead: 'Multiply the two rates, and give the units.', ask: 'D{F}{t} =', num: true, ans: '-6.3', tol: 0.0005, units: 'liters per hour', unitAlts: ['L/h', 'L/hr', 'liters/hour', 'liters/hr'],
+        wrongs: [['6.3', 'The fuel in the tank falls, so the rate is negative: `(−0.07)(90) = −6.3`.'],
+          [['-0.000778', '-0.00078', '-0.0008'], 'That divides `−0.07` by 90. Rates in a chain multiply: `D{F}{d} · D{d}{t}`.']],
+        hints: ['`D{F}{t} = D{F}{d} · D{d}{t}`, with the two rates you found.'],
+        why: 'The tank loses about 6.3 liters each hour.' }] },
+
+  /* 12. (twin 6.4) the e^g(x) and ln g(x) forms, and a base-2 logarithm */
+  { id: 'm4', sec: 'sec-more', task: 'Find `f′(2)`, `p′(1)` and `h′(2)`.', board: ['f(x) = e^(4 − x^2)', 'p(x) = ln(5x^2 − 1)', 'h(x) = 4"log"_2 x'], teach: T_GFORMS,
+    steps: [
+      { lead: 'Differentiate `f` with the `e^(g(x))` form.', ask: 'f′(x) =', ans: '-2x e^(4 - x^2)',
+        wrongs: [['e^(4 - x^2)', 'Multiply by the derivative of the inside: `Dx (e^(g(x))) = g′(x) e^(g(x))`, with `g′(x) = −2x`.'],
+          ['2x e^(4 - x^2)', 'The derivative of the inside, `4 − x^2`, is `−2x`, which is negative.'],
+          ['(4 - x^2) e^(3 - x^2)', 'That is the power rule, which needs a constant exponent. `e^u` is its own derivative: keep `e^(4 − x^2)` and multiply by `−2x`.'],
+          ['-2x e^(-2x)', 'Leave the inside alone in the exponent: `e^(4 − x^2)` stays as it is, and `−2x` multiplies it.']],
+        hints: ['`Dx (e^(g(x))) = g′(x) e^(g(x))`, with `g(x) = 4 − x^2`.'] },
+      { lead: 'Evaluate `f′(2)`.', ask: 'f′(2) =', num: true, ans: '-4',
+        wrongs: [['4', '`−2 · 2 = −4`, and `e^0 = 1`, so `f′(2)` is negative.'],
+          [['-4e^4', '-218.4'], 'At `x = 2` the exponent is `4 − 2^2 = 0`, so the exponential is `e^0 = 1`.']],
+        hints: ['At `x = 2`, the exponent `4 − x^2` is 0.'] },
+      { lead: 'Differentiate `p` with the `ln g(x)` form.', ask: 'p′(x) =', ans: '10x/(5x^2 - 1)',
+        wrongs: [['1/(5x^2 - 1)', 'Multiply by the derivative of the inside: `Dx (ln g(x)) = F{g′(x)}{g(x)}`, with `g′(x) = 10x`.'],
+          ['1/(10x)', 'The derivative of `ln g(x)` is `F{g′(x)}{g(x)}`, not `F{1}{g′(x)}`.'],
+          ['10x', 'Divide by the inside: `F{g′(x)}{g(x)} = F{10x}{5x^2 − 1}`.']],
+        hints: ['`Dx (ln g(x)) = F{g′(x)}{g(x)}`, with `g(x) = 5x^2 − 1`.'] },
+      { lead: 'Evaluate `p′(1)`.', ask: 'p′(1) =', num: true, ans: '2.5',
+        wrongs: [['0.25', 'That is `F{1}{5 − 1}`. The top is the derivative of the inside, `10x`, which is 10 at `x = 1`.'],
+          ['0.1', 'That is `F{1}{10x}`. The derivative of `ln g(x)` is `F{g′(x)}{g(x)}`, which is `F{10}{4}` at `x = 1`.']],
+        hints: ['At `x = 1`, the top `10x` is 10 and the bottom `5x^2 − 1` is 4.'] },
+      { lead: 'Which formula differentiates `"log"_2 x`?', ok: 0, pick: [
+        ['`Dx ("log"_a x) = F{1}{x ln a}`, with `a = 2`', 'A logarithm with base 2 differs from `ln x` by the factor `F{1}{ln 2}`.'],
+        ['`Dx (ln x) = F{1}{x}`', 'That rule is for base `e`. Base 2 adds the factor `F{1}{ln 2}`: `Dx ("log"_a x) = F{1}{x ln a}`.'],
+        ['`Dx (a^x) = a^x ln a`, with `a = 2`', 'That is the derivative of `2^x`, an exponential. `"log"_2 x` is a logarithm: `Dx ("log"_a x) = F{1}{x ln a}`.']] },
+      { lead: 'Differentiate `h(x) = 4"log"_2 x`.', ask: 'h′(x) =', ans: '4/(x ln(2))', teach: T_EXPLOG,
+        wrongs: [['4/x', 'That is the derivative of `4ln x`. Base 2 adds the factor `F{1}{ln 2}`.'],
+          ['4ln(2)/x', 'The `ln 2` goes on the bottom: `Dx ("log"_2 x) = F{1}{x ln 2}`.'],
+          ['1/(x ln(2))', 'Keep the constant 4 in front.']],
+        hints: ['`Dx ("log"_2 x) = F{1}{x ln 2}`. Multiply by 4.'] },
+      { lead: 'Evaluate `h′(2)`. Use a calculator for `ln 2`.', ask: 'h′(2) =', num: true, ans: '2/ln(2)', tol: 0.005, teach: T_EXPLOG,
+        wrongs: [['2', 'That is `F{4}{2}`, the answer for base `e`. Divide by `ln 2` too.'],
+          [['2ln(2)', '1.386', '1.39'], 'That is `F{4 ln 2}{2}`. The `ln 2` goes on the bottom: `F{4}{2 ln 2}`.']],
+        hints: ['Put `x = 2` into `h′(x) = F{4}{x ln 2}`.'] }] },
+
+  /* 13. (twin 6.5) the inverse cosine of an inside function. The derivative is defined only for |x| < 1/3, where the engine
+     samples one point, so it is not a typed expression row: the student types what goes under the root and the number on
+     top, and the page shows the line. */
+  { id: 'm5', sec: 'sec-more', task: 'Differentiate `q`, and find `q′(F{1}{6})`. The inverse cosine rule has a minus sign in front.', board: 'q(x) = cos^(−1)(3x)', teach: T_INV,
+    steps: [
+      { lead: 'Which rule do you use?', ok: 0, pick: [
+        ['`Dx (cos^(−1) g(x)) = −F{g′(x)}{sqrt(1 − [g(x)]^2)}`, with `g(x) = 3x`', 'This is the inverse cosine rule for an inside function, from New Formulas This Unit.'],
+        ['`Dx (cos g(x)) = −sin(g(x)) g′(x)`', 'That is the rule for the cosine. `cos^(−1)` is the inverse cosine, which has its own rule.'],
+        ['The rule for `sec(3x)`, because `cos^(−1)(3x) = F{1}{cos(3x)}`', 'The `−1` marks the inverse function, not a power. `F{1}{cos(3x)}` is `sec(3x)`, a different function.']] },
+      { lead: 'The root holds `1 − (3x)^2`. Simplify it.', ask: '1 − (3x)^2 =', ans: '1 - 9x^2', form: FORM.expanded,
+        wrongs: [['1 - 3x^2', 'Square the whole inside, the 3 too: `(3x)^2 = 9x^2`.'],
+          ['1 - 6x^2', '`(3x)^2 = 3x · 3x = 9x^2`. Squaring multiplies by itself; it does not double.']],
+        hints: ['`(3x)^2 = 3^2 · x^2`.'] },
+      { lead: 'The rule gives `q′(x) = F{▢}{sqrt(1 − 9x^2)}`. What number goes on top, sign included?', ask: '"top" =', num: true, ans: '-3',
+        wrongs: [['3', 'The inverse cosine rule has a minus sign in front: `−F{g′(x)}{sqrt(1 − [g(x)]^2)}`.'],
+          ['-1', 'Multiply by the derivative of the inside: `g′(x) = 3`.'],
+          ['1', 'The top is `−g′(x)`: the rule’s minus sign times the derivative of `3x`, which is 3.']],
+        hints: ['The top is `−g′(x)`, with `g(x) = 3x`.'] },
+      { show: 'q′(x) = −F{3}{sqrt(1 − 9x^2)}' },
+      { lead: 'Evaluate `q′(F{1}{6})`. Use a calculator for the root.', ask: 'q′(F{1}{6}) =', num: true, ans: '-2sqrt(3)', tol: 0.005,
+        wrongs: [['3.464', 'Keep the minus sign: the inverse cosine falls everywhere it is defined.'],
+          [['-2/sqrt(3)', '-1.155'], 'Include the 3 on top, from the derivative of the inside.'],
+          ['-6', 'Under the root, `1 − 9(F{1}{6})^2 = 1 − F{1}{4} = F{3}{4}`, not `F{1}{4}`.']],
+        hints: ['At `x = F{1}{6}`, `9x^2 = F{9}{36} = F{1}{4}`, so the bottom is `sqrt(F{3}{4})`.'] }],
+    graph: { x: [-0.45, 0.45], y: [-0.4, 3.6], ticks: { x: 0.2, y: 1 }, fns: [{ f: function (x) { return Math.acos(3 * x); }, domain: [-1 / 3, 1 / 3] }],
+      tangent: { f: 0, at: 1 / 6, slope: -2 * Math.sqrt(3), half: 0.14 }, dots: [{ x: 1 / 6, y: Math.PI / 3, label: '(1/6, π/3)', at: 'ne' }],
+      aria: 'The graph of the inverse cosine of 3x, defined from x = −1/3 to 1/3, falling from height π to 0, with its tangent line at (1/6, π/3), which has slope about −3.46.' },
+    after: 'The graph exists only for `−F{1}{3} ≤ x ≤ F{1}{3}`, where `3x` is between `−1` and 1, and it falls everywhere, so `q′` is negative.' },
+
+  /* 14. (twin 6.6) implicit differentiation, the tangent line and an estimate */
+  { id: 'm6', sec: 'sec-more', task: 'The curve passes through `(1, 2)`. Find the tangent line there, say whether the curve is rising or falling, and estimate its `y`-value at `x = 0.9`.', board: 'x^2 y^2 + y = 6', teach: T_IMP,
+    steps: [
+      { lead: 'Check that `(1, 2)` is on the curve.', ask: '1^2 · 2^2 + 2 =', num: true, ans: '6',
+        wrongs: [['4', 'Add the `y` term: `1 · 4 + 2`.']],
+        hints: ['Work out `1^2 · 2^2`, then add 2.'] },
+      { lead: 'Differentiate `x^2 y^2` with respect to `x`. Remember that `y` is a function of `x`.', ok: 0, pick: [
+        ['`2xy^2 + 2x^2 y y′`', 'It is a product, so use the product rule: `(x^2)′ y^2 + x^2 (y^2)′`, with `(y^2)′ = 2y y′`.'],
+        ['`2xy^2`', 'That treats `y` as a constant. Because `y` changes with `x`, the product rule gives a second term, `x^2 · 2y y′`.'],
+        ['`2x · 2y y′`', 'That multiplies the two derivatives. Use the product rule: `(x^2)′ y^2 + x^2 (y^2)′`.'],
+        ['`2xy^2 + 2x^2 y`', 'The derivative of `y^2` is `2y y′`, by the chain rule, so the second term needs a `y′`.']] },
+      { lead: 'Differentiate `y` with respect to `x`.', ok: 0, pick: [
+        ['`y′`', 'The derivative of `y` with respect to `x` is `y′`, the slope you are solving for.'],
+        ['1', 'That treats `y` as the variable. Its derivative with respect to `x` is `y′`.'],
+        ['0', '`y` is not a constant: it changes with `x`, at the rate `y′`.']] },
+      { show: '2xy^2 + 2x^2 y y′ + y′ = 0' },
+      { lead: 'Put in `x = 1` and `y = 2`, then solve for `y′`.', ask: 'y′ =', num: true, ans: '-8/5',
+        wrongs: [[['8/5', '1.6'], 'Move the 8 to the other side: `5y′ = −8`.'],
+          ['-2', 'Include the `y′` from the `y` term: `4y′ + y′ = 5y′`.'],
+          [['-5/8', '-0.625'], '`5y′ = −8` gives `y′ = F{−8}{5}`, not `F{5}{−8}`.'],
+          [['-4/5', '-0.8'], '`2xy^2 = 2 · 1 · 2^2 = 8`: square the 2 before multiplying.']],
+        hints: ['With `x = 1` and `y = 2`, the equation is `8 + 4y′ + y′ = 0`.'] },
+      { lead: 'Write the tangent line at `(1, 2)`.', ask: 'y =', ans: '2 - 8(x - 1)/5', eq: 'y',
+        wrongs: [['2 + 8(x - 1)/5', 'The slope is `y′ = −F{8}{5}`, so the line falls.'],
+          ['1 - 8(x - 2)/5', 'The point is `(1, 2)`: `x = 1` and `y = 2`. Use `y − 2 = m(x − 1)`.'],
+          ['-8(x - 1)/5', 'The line passes through `(1, 2)`, so `y = 2` at `x = 1`.']],
+        hints: ['Use `y − y_1 = m(x − x_1)` with `m = −F{8}{5}` and the point `(1, 2)`.'] },
+      { lead: 'Is the curve rising or falling as it passes through `(1, 2)`?', ok: 0, pick: [
+        ['Falling, because the slope `−F{8}{5}` is negative', 'A negative slope means `y` decreases as `x` increases through 1.'],
+        ['Rising, because `y = 2` is positive', 'The height says where the curve is, not which way it goes. The slope `−F{8}{5}` is negative.'],
+        ['Neither: the curve is flat at `(1, 2)`', 'Flat means a slope of 0. Here the slope is `−F{8}{5}`.']] },
+      { lead: 'Use the tangent line to estimate the curve’s `y`-value at `x = 0.9`.', ask: 'y ≈', num: true, ans: '2.16', tol: 0.0005,
+        wrongs: [['1.84', 'At `x = 0.9`, `x − 1 = −0.1`, so `−F{8}{5}(x − 1)` is positive. Left of the point, a falling line is above 2.'],
+          ['0.16', 'That is the change in `y`. Add it to `y = 2`.']],
+        hints: ['Put `x = 0.9` into `y = 2 − F{8}{5}(x − 1)`.'] }],
+    graph: { x: [0, 3], y: [0, 6.5], ticks: { x: 1, y: 1 }, fns: [{ f: m6Y }],
+      tangent: { f: 0, at: 1, slope: -1.6, half: 0.8 }, dots: [{ x: 1, y: 2, label: '(1, 2)', at: 'ne' }],
+      aria: 'The curve x squared y squared plus y equals 6, falling from (0, 6) to about (3, 0.76), with its tangent line at (1, 2), which has slope −8/5.' },
+    after: 'At `x = 0.9` the curve’s `y`-value is about 2.17, close to the estimate 2.16 from the tangent line.' },
+
+  /* 15. (twin 6.7) logarithmic differentiation with the variable in the base and the exponent */
+  { id: 'm7', sec: 'sec-more', task: 'Find `D{y}{x}`, then evaluate it at `x = 1`.', board: 'y = (x^2 + 3)^x', teach: T_LOGD2,
+    steps: [
+      { lead: 'Which method works?', ok: 0, pick: [
+        ['Logarithmic differentiation', 'Both the base `x^2 + 3` and the exponent `x` contain `x`, so neither the power rule nor the `a^x` rule applies.'],
+        ['The power rule: `x(x^2 + 3)^(x − 1) · 2x`', 'The power rule needs a constant exponent. Here the exponent `x` changes.'],
+        ['The `a^x` rule: `(x^2 + 3)^x ln(x^2 + 3)`', 'That rule needs a constant base. Here the base `x^2 + 3` changes with `x`.']] },
+      { lead: 'Take `ln` of both sides and bring the exponent down.', ask: 'ln y =', ans: 'x ln(x^2 + 3)', form: FORM.lnSplit,
+        wrongs: [['x + ln(x^2 + 3)', '`ln(A^n) = n ln A`: the exponent multiplies the logarithm.'],
+          ['x ln(x^2) + x ln(3)', 'A logarithm does not split over a sum, so `ln(x^2 + 3)` stays whole. Only products, quotients and powers split.']],
+        hints: ['`ln(A^n) = n ln A`, with `A = x^2 + 3` and `n = x`.'] },
+      { lead: 'Differentiate both sides. The left side gives `F{y′}{y}`; the right side needs the product rule.', ask: 'F{y′}{y} =', ans: 'ln(x^2 + 3) + 2x^2/(x^2 + 3)',
+        wrongs: [['ln(x^2 + 3)', 'Add the second product-rule term: `x · F{2x}{x^2 + 3}`.'],
+          ['2x/(x^2 + 3)', 'That is the derivative of `ln(x^2 + 3)` alone. Use the product rule on `x · ln(x^2 + 3)`.'],
+          ['ln(x^2 + 3) + x/(x^2 + 3)', 'The derivative of `ln(x^2 + 3)` is `F{2x}{x^2 + 3}`: multiply by the derivative of the inside.']],
+        hints: ['The derivative of `x`, times `ln(x^2 + 3)`, plus `x` times the derivative of `ln(x^2 + 3)`.'] },
+      { lead: 'Multiply both sides by `y`, written as the original function.', ask: 'y′ =', ans: '(x^2 + 3)^x (ln(x^2 + 3) + 2x^2/(x^2 + 3))',
+        wrongs: [['ln(x^2 + 3) + 2x^2/(x^2 + 3)', 'That is `F{y′}{y}`. Multiply it by `y = (x^2 + 3)^x`.']],
+        hints: ['`y′ = y · F{y′}{y}`, with `y = (x^2 + 3)^x`.'] },
+      { lead: 'Evaluate `y′(1)`. Use a calculator for `ln 4`.', ask: 'y′(1) =', num: true, ans: '4ln(4) + 2', tol: 0.005,
+        wrongs: [[['ln(4) + 1/2', '1.886', '1.89'], 'That is `F{y′}{y}` at `x = 1`. Multiply by `y(1) = 4^1 = 4`.'],
+          [['4ln(4)', '5.545'], 'Include the second term: `F{2 · 1^2}{1 + 3} = F{1}{2}`, which times 4 is 2.'],
+          ['2', 'That is the power rule’s answer, `x(x^2 + 3)^(x − 1) · 2x` at `x = 1`. Use the `y′` you found.']],
+        hints: ['At `x = 1`, `y = 4^1 = 4` and `F{y′}{y} = ln 4 + F{1}{2}`.'] }] },
+
+  /* 16. (twin 6.8) a linear approximation with the base point chosen by the student */
+  { id: 'm8', sec: 'sec-more', task: 'Use a linear approximation to estimate `ln(0.97)` by hand. Choose the base point yourself.', board: 'f(x) = ln x', teach: T_LIN,
+    steps: [
+      { lead: 'Which base point `a` do you use?', ok: 0, pick: [
+        ['`a = 1`, because `ln 1 = 0` and 1 is close to 0.97', 'Choose a nearby point where `f(a)` and `f′(a)` are easy to compute by hand.'],
+        ['`a = 0`, because 0 is the easiest number', '`ln 0` does not exist: `ln x` is defined only for `x > 0`.'],
+        ['`a = 0.97`', 'Then `f(a) = ln(0.97)` is the number you are trying to estimate.'],
+        ['`a = e`, because `ln e = 1`', '`e ≈ 2.718` is far from 0.97, so the tangent line there gives a poor estimate. Choose a nearby point.']] },
+      { lead: 'Find `f(1)`.', ask: 'f(1) = ln 1 =', num: true, ans: '0',
+        wrongs: [['1', '`ln 1 = 0`, because `e^0 = 1`.']],
+        hints: ['To what power do you raise `e` to get 1?'] },
+      { lead: 'Find `f′(1)`.', ask: 'f′(1) =', num: true, ans: '1',
+        wrongs: [['0', 'That is `f(1)`. The derivative is `f′(x) = F{1}{x}`, so `f′(1) = F{1}{1}`.']],
+        hints: ['`Dx (ln x) = F{1}{x}`.'] },
+      { lead: 'Write the linear approximation at `x = 1`.', ask: 'L(x) =', ans: 'x - 1',
+        wrongs: [['x', '`L(x) = f(1) + f′(1)(x − 1) = 0 + 1 · (x − 1)`. Keep the `−1`.'],
+          ['x + 1', 'With `a = 1`, the factor is `x − a = x − 1`.'],
+          ['1', 'That swaps the two values. `f(1) = 0` is the constant, and `f′(1) = 1` multiplies `x − 1`.']],
+        hints: ['`L(x) = f(1) + f′(1)(x − 1)`.'] },
+      { lead: 'Estimate `ln(0.97)`.', ask: 'ln(0.97) ≈ L(0.97) =', num: true, ans: '-0.03', tol: 0.0002,
+        wrongs: [['0.03', '`0.97 − 1 = −0.03`: 0.97 is less than 1, so the estimate is negative.'],
+          [['-0.0305', '-0.03046'], 'That is the calculator value. The question asks for the estimate `L(0.97)`, which needs no calculator.'],
+          ['1.97', 'That is `0.97 + 1`. Use `L(x) = x − 1`.']],
+        hints: ['Put `x = 0.97` into `L(x) = x − 1`.'],
+        why: 'A calculator gives `ln(0.97) ≈ −0.0305`, so the estimate is off by about 0.0005.' }],
+    graph: { x: [0.3, 2], y: [-1.2, 0.8], ticks: { x: 0.5, y: 0.5 }, fns: [{ f: function (x) { return Math.log(x); } }, { f: function (x) { return x - 1; }, role: 'rate', dash: true, domain: [0.3, 1.8] }],
+      dots: [{ x: 1, y: 0, label: '(1, 0)', at: 'nw' }],
+      aria: 'The graph of ln x from x = 0.3 to 2, rising through (1, 0), with the dashed tangent line L(x) = x − 1 touching it there and lying above it on both sides.' },
+    after: 'Near `x = 1` the tangent line `L(x) = x − 1` stays close to the curve `y = ln x`, so `L(0.97)` is close to `ln(0.97)`.' },
+
+  /* 17. (value-add: Paul, Differentials, Problem 4) the differential dy beside the actual change Δy */
+  { id: 'm9', sec: 'sec-more', task: 'Compute `dd{y}` and `Δy` for `y = f(x) = e^(x^2)` as `x` changes from 3 to 3.01.', board: 'y = f(x) = e^(x^2)', teach: T_DIFF,
+    steps: [
+      { lead: 'Differentiate.', ask: 'D{y}{x} =', ans: '2x e^(x^2)',
+        wrongs: [['e^(x^2)', 'Multiply by the derivative of the inside, `x^2`, which is `2x`.'],
+          ['x^2 e^(x^2 - 1)', 'That is the power rule, which needs a constant exponent. `e^u` is its own derivative: keep `e^(x^2)` and multiply by `2x`.'],
+          ['2x e^(2x)', 'Leave the inside alone in the exponent: `e^(x^2)` stays as it is, and `2x` multiplies it.']],
+        hints: ['`Dx (e^(g(x))) = g′(x) e^(g(x))`, with `g(x) = x^2`.'] },
+      { lead: 'The differential `dd{x}` is the change in `x`.', ask: 'dd{x} =', num: true, ans: '0.01', tol: 0.0005,
+        wrongs: [['3.01', 'That is the new value of `x`. The change is `3.01 − 3`.'],
+          ['0.1', '`3.01 − 3 = 0.01`, one hundredth.']],
+        hints: ['Subtract: `3.01 − 3`.'] },
+      { lead: 'Find `dd{y} = f′(3) dd{x}`, the change along the tangent line. Use a calculator for `e^9`.', ask: 'dd{y} =', num: true, ans: '0.06e^9', tol: 0.2,
+        wrongs: [[['0.01e^9', '81.03', '81'], 'That is `e^9 · 0.01`. Multiply by the derivative at 3, `2 · 3 · e^9 = 6e^9`, not by `e^9` alone.'],
+          [['6e^9', '48618', '48618.5'], 'That is `f′(3)`. Multiply it by `dd{x} = 0.01`.']],
+        hints: ['`f′(3) = 2 · 3 · e^(3^2) = 6e^9`. Multiply it by `dd{x}`.'] },
+      { lead: 'Find `Δy = f(3.01) − f(3)`, the change along the curve.', ask: 'Δy =', num: true, ans: 'e^(9.0601) - e^9', tol: 0.2,
+        wrongs: [[['0.06e^9', '486.2'], 'That is `dd{y}`, the change along the tangent line. `Δy` is the change along the curve: `e^(3.01^2) − e^(3^2)`.'],
+          [['e^(9.0601)', '8605', '8605.01'], 'That is `f(3.01)`. Subtract `f(3) = e^9`.'],
+          [['e^(9.01) - e^9', '81.44'], 'Square all of 3.01: `3.01^2 = 9.0601`, not 9.01.']],
+        hints: ['`f(3.01) = e^(3.01^2)` and `f(3) = e^(3^2) = e^9`. Subtract them with a calculator.'] },
+      { lead: 'Why are `dd{y}` and `Δy` different?', ok: 0, pick: [
+        ['`dd{y}` is the change along the tangent line, and `Δy` is the change along the curve', 'They are close because `dd{x}` is small, but the curve bends away from its tangent line.'],
+        ['One of them was computed wrong: they should be equal', 'They measure different things. `dd{y}` follows the tangent line and `Δy` follows the curve, so they agree only approximately.'],
+        ['`Δy` is the estimate and `dd{y}` is the exact change', 'It is the other way around: `Δy = f(3.01) − f(3)` is the exact change, and `dd{y}` estimates it with the tangent line.']] }] }
 ];
 
 /* PARENTHESIS SLIPS. Typing x+3/x+4 for (x + 3)/(x + 4) is the commonest typing slip, and the engine's "Reads as" line
@@ -3125,7 +3404,7 @@ function registerProblems() {
       if (st.pick) { MCS[id] = { opts: st.pick, ok: st.ok, blk: p.id }; return; }
       if (st.show) return;
       var item = {};
-      Object.keys(st).forEach(function (key) { if (['lead', 'why', 'at'].indexOf(key) < 0) item[key] = st[key]; });
+      Object.keys(st).forEach(function (key) { if (['lead', 'why', 'at', 'again'].indexOf(key) < 0) item[key] = st[key]; });
       if (!item.v && p.v && !item.num) item.v = p.v;
       if (!item.teach) item.teach = p.teach;
       if (st.why) item.okNote = st.why;
@@ -3156,10 +3435,13 @@ function problemGraph(p) {
   return figure('fig-' + p.id, plot(g), p.after);
 }
 
-/* one problem card: the board, then each step in order until the first one not yet answered */
+/* one problem card: the given table (More Practice, as on the Unit 4 page), the board, then each step in order until the
+   first one not yet answered. A problem may carry tbl: { cols, rows } (the engine's table(), ENGINE.md 3.4), and then a
+   step with again: true shows the table again above it (#tb-<step id>), once the first copy has scrolled away. */
 function problemHTML(p) {
   var h = p.task ? '<p class="ptext">' + P(p.task) + '</p>' : '';
-  h += '<div class="pboard">' + show([].concat(p.board)) + '</div>';
+  if (p.tbl) h += '<div class="ptbl">' + table('tb-' + p.id, p.tbl) + '</div>';
+  if (p.board) h += '<div class="pboard">' + show([].concat(p.board)) + '</div>';
   if (p.pic) h += figure('pic-' + p.id, p.pic(), p.picCap);
   var open = true, lines = [];
   function flush() { if (lines.length) { h += show(lines); lines = []; } }
@@ -3167,6 +3449,7 @@ function problemHTML(p) {
     var st = p.steps[k], id = stepId(p, k);
     if (st.show) { lines = lines.concat(st.show); continue; }
     flush();
+    if (st.again && p.tbl) h += '<div class="ptbl">' + table('tb-' + id, p.tbl) + '</div>';
     h += '<div class="pstep' + (stepDone(p, k) ? ' ok' : '') + '">' + (st.lead ? '<p class="plead">' + P(st.lead) + '</p>' : '');
     h += st.pick ? choice(id, st.pick, st.ok, p.id) : '<div class="srow tr fr-row' + (S.done[id] ? ' ok' : '') + '"><div class="sval">' + typed(id) + '</div></div>';
     h += '</div>';
@@ -3225,7 +3508,7 @@ function backHTML() {
 function page() {
   return header('Unit 6 Practice', SECTIONS_P.map(function (s) { return ['#' + s.id, s.nav || s.title]; }).concat([['#sec-back', 'Next']])) +
     '<main id="top">' + hero({ kicker: 'Calculus I · Unit 6: The Chain Rule and Implicit Differentiation', title: 'Unit 6 Practice',
-      dek: 'Use this page after you read Unit 6: The Chain Rule and Implicit Differentiation and Unit 6 Worked Examples. For each problem, choose the method, then type each line of the work. Each line is checked before the next one opens. Type a power with ⟦^⟧, as in ⟦x^2⟧ or ⟦e^(-3t)⟧, and put a whole top or bottom in parentheses, as in ⟦(x + 1)/(x − 2)⟧.' }) +
+      dek: 'Use this page after you read Unit 6: The Chain Rule and Implicit Differentiation and Unit 6 Worked Examples. For each problem, choose the method, then type each line of the work. Each line is checked before the next one opens. Problems 9 to 17, under More Practice, are optional. Type a power with ⟦^⟧, as in ⟦x^2⟧ or ⟦e^(-3t)⟧, and put a whole top or bottom in parentheses, as in ⟦(x + 1)/(x − 2)⟧.' }) +
     SECTIONS_P.map(sectionHTML).join('') + backHTML() + '</main>';
 }
 expose({ PROBLEMS: PROBLEMS, problemHTML: problemHTML, formProblem: formProblem, stepDone: stepDone });
