@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Unit 6 Practice: The Chain Rule and Implicit Differentiation</title>
+<title>Unit 6 Practice</title>
 <meta name="description" content="Practice the chain rule and the derivatives it unlocks, with feedback on each line of your work.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2792,7 +2792,7 @@ var selfcheck = (function () {
    ==================================================================================== */
 
 /* ---------------- links ---------------- */
-var PAUL_C = 'https://tutorial.math.lamar.edu/Classes/CalcI/', PAUL_P = 'https://tutorial.math.lamar.edu/Problems/CalcI/';
+var PAUL_C = 'https://tutorial.math.lamar.edu/Classes/CalcI/';
 function paulEx(page, title, ex) { return [PAUL_C + page + '.aspx', 'Paul’s Online Math Notes: ' + title + (ex ? ', ' + ex : '')]; }
 var T_CHAIN = paulEx('ChainRule', 'Chain Rule', 'Example 2');
 var T_CHAIN5 = paulEx('ChainRule', 'Chain Rule', 'Example 5');
@@ -3218,14 +3218,14 @@ function sectionHTML(s, n) {
   return sec(s.id, String(n + 1), s.title, s.lede) + col(ps.map(function (p) { return blk(p.id, function () { return problemHTML(p); }); }).join(''));
 }
 function backHTML() {
-  return sec('sec-back', '', 'Back to Paul', '') + prose('', [
-    'If one type of problem gave you trouble, rework Paul’s practice problems for it: [Chain Rule](' + PAUL_P + 'ChainRule.aspx), [Implicit Differentiation](' + PAUL_P + 'ImplicitDIff.aspx), [Logarithmic Differentiation](' + PAUL_P + 'LogDiff.aspx) or [Linear Approximations](' + PAUL_P + 'LinearApproximations.aspx).',
-    'Next, complete Problem Set 5, Parts 1 and 2, and take the Derivative Rules Check. Unit 8 begins in Paul’s notes with Example 6 of [Implicit Differentiation](' + PAUL_C + 'ImplicitDIff.aspx), then [Related Rates](' + PAUL_C + 'RelatedRates.aspx).']);
+  return sec('sec-back', '', 'What Comes Next', '') + prose('', [
+    'If one kind of problem gave you trouble, find the example of that kind in Unit 6 Worked Examples, cover its solution, and work it by hand.',
+    'Next, complete the Unit 6 Problem Set and take the Derivative Rules Check.']);
 }
 function page() {
-  return header('Unit 6 Practice', SECTIONS_P.map(function (s) { return ['#' + s.id, s.nav || s.title]; }).concat([['#sec-back', 'Back to Paul']])) +
-    '<main id="top">' + hero({ kicker: 'Calculus I · Unit 6', title: 'Unit 6 Practice: The Chain Rule and Implicit Differentiation',
-      dek: 'Use this page after the Unit 6 reading and Paul’s practice problems. For each problem, choose the method, then type each line of the work. Each line is checked before the next one opens. Type a power with ⟦^⟧, as in ⟦x^2⟧ or ⟦e^(-3t)⟧, and put a whole top or bottom in parentheses, as in ⟦(x + 1)/(x − 2)⟧.' }) +
+  return header('Unit 6 Practice', SECTIONS_P.map(function (s) { return ['#' + s.id, s.nav || s.title]; }).concat([['#sec-back', 'Next']])) +
+    '<main id="top">' + hero({ kicker: 'Calculus I · Unit 6: The Chain Rule and Implicit Differentiation', title: 'Unit 6 Practice',
+      dek: 'Use this page after you read Unit 6: The Chain Rule and Implicit Differentiation and Unit 6 Worked Examples. For each problem, choose the method, then type each line of the work. Each line is checked before the next one opens. Type a power with ⟦^⟧, as in ⟦x^2⟧ or ⟦e^(-3t)⟧, and put a whole top or bottom in parentheses, as in ⟦(x + 1)/(x − 2)⟧.' }) +
     SECTIONS_P.map(sectionHTML).join('') + backHTML() + '</main>';
 }
 expose({ PROBLEMS: PROBLEMS, problemHTML: problemHTML, formProblem: formProblem, stepDone: stepDone });
